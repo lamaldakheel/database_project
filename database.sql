@@ -24,6 +24,7 @@ foreign key(Menu_ID) references MENU(Menu_ID)
 );
 
 create table BRANCH_TIME(
+Branch_Code int primary key ,
 Open_time varchar(5),
 close_time varchar(5),
 foreign key(Branch_Code) references BRANCH (Branch_Code)
@@ -50,11 +51,41 @@ Place varchar(30)
 );
 
 create table ORDER_DISH(
+Order_Number int primary key,
 Dishs_Name varchar(30),
 Dishs_Price float,
 quantity int,
 foreign key (Order_Number) references ORDERS(Order_Number)
 );
 
+create table DISH_TO_PICK_ORDER(
+Dish_code int primary key ,
+Order_Number int primary key,
+foreign key (Dish_code) references DISH(Dish_code),
+foreign key (Order_Number) references ORDERS(Order_Number)
+);
 
+create table CUSTOMER(
+phone_number int primary key,
+customer_Name varchar(30),
+foreign key (Bill_number) references BILL(Bill_number)
+);
 
+create table BILL(
+Bill_number int primary key,
+Total_price float,
+Payment_method varchar(30),
+State varchar(10),
+Bill_Date varchar(10),
+Bill_Hour int,
+Bill_Minute int,
+Offer int,
+foreign key (Order_Number) references ORDERS(Order_Number)
+);
+
+create table CUSTOMER_REQUEST_ORDER(
+phone_number int primary key,
+Order_Number int primary key,
+foreign key (phone_number) references CUSTOMER(phone_number),
+foreign key (Order_Number) references ORDERS(Order_Number)
+);

@@ -107,3 +107,11 @@ CREATE TABLE CUSTOMER_REQUEST_ORDER(
   FOREIGN KEY (Phone_Number) REFERENCES CUSTOMER(Phone_Number),
   FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
 );
+
+insert into ORDERS (Order_Number, Place)
+values
+(100,"take away"),
+(101,"tdine in"),
+(102,"tdine in"),
+(103,"tdine in"),
+(103,"take away");

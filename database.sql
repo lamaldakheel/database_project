@@ -19,21 +19,20 @@ CREATE TABLE BRANCH(
   City VARCHAR(30),
   Neighborhood VARCHAR(30),
   Street VARCHAR(30),
-  Capacity INT
-  
+  Capacity INT CHECK (Capacity BETWEEN 30 AND 70)
 );
 
 
  CREATE TABLE EMPLOYEE(
   Employee_ID INT PRIMARY KEY,
   Employee_Name VARCHAR(30) NOT NULL,
-  Age INT,
-  Gender VARCHAR(1),
+  Age INT(2),
+  Gender VARCHAR(1)  CHECK (Gender= "M" OR Gender= "F" ),
   Phone_Number INT(10),
   Email VARCHAR(30),
   Employee_position VARCHAR(30),
-  National_Address INT,
-  Salary FLOAT,
+  National_Address INT(10),
+  Salary FLOAT CHECK (Salary BETWEEN 4000 AND 16000),
   Branch_Code INT,
   FOREIGN KEY (Branch_Code) REFERENCES BRANCH(Branch_Code)
 );
@@ -45,12 +44,17 @@ ADD Manager_ID INT;
 ALTER TABLE BRANCH
 ADD CONSTRAINT fk_branch_manager FOREIGN KEY (Manager_ID) REFERENCES EMPLOYEE(Employee_ID);
 
-CREATE TABLE BRANCH_TIME(
-  Branch_Code INT PRIMARY KEY,
-  Open_time VARCHAR(5),
-  Close_time VARCHAR(5),
-  FOREIGN KEY (Branch_Code) REFERENCES BRANCH(Branch_Code)
-);
+DELIMITER //
+CREATE TRIGGER check_min_employees_before_delete
+BEFORE DELETE ON EMPLOYEE
+FOR EACH ROW
+BEGIN
+  IF (SELECT COUNT(*) FROM EMPLOYEE WHERE Branch_Code = OLD.Branch_Code) <= 4 THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Cannot delete employee. The branch must have at least 4 employees.';
+  END IF;
+END; //
+DELIMITER ;
 
 
 CREATE TABLE MENU(
@@ -116,19 +120,18 @@ CREATE TABLE CUSTOMER_REQUEST_ORDER(
 
 INSERT INTO BRANCH (Branch_Code , City , Neighborhood , Street , Capacity, Manager_ID)
 values
-    (1, 'Riyadh', 'Al-Sulaimaniya', 'King Saud Road', 100,NULL),
-    (2, 'Riyadh', 'Alaqiq', 'Kafd ring roud', 150,NULL),
-    (3, 'Riyadh', 'alsafarat', 'Alkhawaba', 100, NULL);
+    (1, 'Riyadh', 'Al-Sulaimaniya', 'King Saud Road', 40,NULL),
+    (2, 'Riyadh', 'Alaqiq', 'Kafd ring roud', 60,NULL),
+    (3, 'Riyadh', 'alsafarat', 'Alkhawaba', 60, NULL);
     
 INSERT INTO EMPLOYEE  (Employee_ID, Employee_Name, Age, Gender, Phone_Number, Email, Employee_position, National_Address, salary, Branch_code)
 VALUES
-    (12534, 'Lama', 26, 'F', '0599777888', 'lama@gmail.com', 'Manager', 23456, 12000,1),  
+    (12534, 'Lama', 26, 'F', '0599777888', 'lama@gmail.com', 'Manager', 23456, 15000,1),  
     (12536, 'Fay', 20, 'F', '0599899399', 'fay_123@gmail.com', 'Chef', 12345, 10000,2),  
-    (12535, 'Ahmed', 28, 'M', '0598888777', 'ahmed_123@gmail.com', 'Assistant Manager', 67890, 11000,2),  
-    (12537, 'Nouf', 30, 'F', '0599666777', 'nouf_barista@gmail.com', 'Barista', 34567, 9000,1),  
-    (12538, 'Yara', 24, 'F', '0599555666', 'yara_cashier@gmail.com', 'Cashier', 45678, 8500,3),  
-    (12539, 'Omar', 35, 'M', '0599444555', 'omar_chef@gmail.com', 'Chef', 56789, 12000,3);
-    
+    (12535, 'Ahmed', 28, 'M', '0598888777', 'ahmed_123@gmail.com', 'Assistant Manager', 9890, 11000,2),  
+    (12537, 'Nouf', 30, 'F', '0599666777', 'nouf_barista@gmail.com', 'Barista', 34567, 6000,1),  
+    (12538, 'Yara', 24, 'F', '0599555666', 'yara_cashier@gmail.com', 'Cashier', 45678, 5000,3),  
+    (12539, 'Omar', 35, 'M', '0599444555', 'omar_chef@gmail.com', 'Chef', 56789, 10000,3);
 UPDATE BRANCH
 SET Manager_ID = 12536  
 WHERE Branch_Code = 2;

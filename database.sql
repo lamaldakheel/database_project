@@ -1,4 +1,3 @@
-
 DROP DATABASE IF EXISTS JoeAndTheJoes;
 CREATE DATABASE JoeAndTheJoes;
 USE JoeAndTheJoes;
@@ -63,7 +62,6 @@ CREATE TABLE MENU(
   Menu_Name VARCHAR(30)
 );
 
-
 CREATE TABLE DISH(
   Dish_code INT PRIMARY KEY,
   Category VARCHAR(30),
@@ -78,7 +76,7 @@ CREATE TABLE DISH(
 
 CREATE TABLE ORDERS(
   Order_Number INT PRIMARY KEY,
-  Place VARCHAR(30) 
+  Place VARCHAR(30)
 );
 
 
@@ -89,67 +87,103 @@ CREATE TABLE DISH_TO_PICK_ORDER(
   FOREIGN KEY (Dish_code) REFERENCES DISH(Dish_code),
   FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
 );
-  
+
 
 CREATE TABLE CUSTOMER(
   Phone_Number INT PRIMARY KEY,
-  Customer_Name VARCHAR(30)
+  Customer_Name VARCHAR(30),
+   CONSTRAINT phone_number_check CHECK (Phone_Number REGEXP '^966[0-9]{9}$')
 );
 
 
 CREATE TABLE BILL(
   Bill_Number INT PRIMARY KEY,
-  Total_price FLOAT,
+  Total_price FLOAT DEFAULT 0.0,
   Payment_method VARCHAR(30),
-  State VARCHAR(10),
-  Bill_Date VARCHAR(10),
-  Bill_Time time,
-  Offer INT,
-  Order_Number INT,
+  State BOOLEAN NOT NULL,
+  CONSTRAINT state_check CHECK (State=true),
+  Bill_Time TIME DEFAULT '07:00:00',
+  Bill_Date DATE ,
+  Offer DECIMAL(5,2) DEFAULT 0.00 ,
+  Order_Number INT, 
   FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
 );
+DELIMITER //
+CREATE TRIGGER Set_Bill_Date
+BEFORE INSERT ON BILL
+FOR EACH ROW
+BEGIN
+   IF NEW.Bill_Date IS NULL THEN
+      SET NEW.Bill_Date = CURRENT_DATE();  -- Set current date if Bill_Date is not provided
+   END IF;
+END $$
 
+
+CREATE TRIGGER Calculate_Total_Price
+BEFORE INSERT ON BILL
+FOR EACH ROW
+BEGIN
+    DECLARE Base_Total_Price FLOAT;
+
+    -- Calculate the total price of all dishes in the order
+    SELECT SUM(D.Price)
+    INTO base_total_price
+    FROM DISH_TO_PICK_ORDER DPO
+    JOIN DISH D ON D.Dish_code = DPO.Dish_code
+    WHERE DPO.Order_Number = NEW.Order_Number;
+
+    -- Apply the offer/discount (if any)
+    IF NEW.Offer > 0 THEN
+        SET NEW.Total_price = base_total_price * (1 - NEW.Offer / 100);
+    ELSE
+        SET NEW.Total_price = base_total_price;
+    END IF;
+    
+    -- If no offer is applied, the total remains the same
+END $$
+
+DELIMITER ;
 
 CREATE TABLE CUSTOMER_REQUEST_ORDER(
-  Phone_Number INT,
+  Phone_Number INT CHECK (Phone_Number REGEXP '^966[0-9]{9}$'),
   Order_Number INT,
   PRIMARY KEY (Phone_Number, Order_Number),
   FOREIGN KEY (Phone_Number) REFERENCES CUSTOMER(Phone_Number),
   FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
 );
 
-INSERT INTO BRANCH (Branch_Code , City , Neighborhood , Street , Capacity, Manager_ID)
+INSERT INTO BRANCH (Branch_Code , City , Neighborhood , Street , Capacity, Manager_ID,)
 values
-    (1, 'Riyadh', 'Al-Sulaimaniya', 'King Saud Road', 40,NULL),
-    (2, 'Riyadh', 'Alaqiq', 'Kafd ring roud', 60,NULL),
-    (3, 'Riyadh', 'alsafarat', 'Alkhawaba', 60, NULL);
+    (1, 'Riyadh', 'Al-Sulaimaniya', 'King Saud Road', 100,NULL),
+    (2, 'Riyadh', 'Alaqiq', 'Kafd ring roud', 150,NULL),
+    (3, 'Riyadh', 'alsafarat', 'Alkhawaba', 100, NULL);
     
 INSERT INTO EMPLOYEE  (Employee_ID, Employee_Name, Age, Gender, Phone_Number, Email, Employee_position, National_Address, salary, Branch_code)
 VALUES
-    (12534, 'Lama', 26, 'F', '0599777888', 'lama@gmail.com', 'Manager', 23456, 15000,1),  
-    (12536, 'Fay', 20, 'F', '0599899399', 'fay_123@gmail.com', 'Manager', 12345, 15000,2),  
-    (12535, 'Ahmed', 28, 'M', '0598888777', 'ahmed_123@gmail.com', 'Manager', 9890, 11000,2),  
-    (12537, 'Nouf', 30, 'F', '0599666777', 'nouf_barista@gmail.com', 'Barista', 34567, 6000,1),  
-    (12538, 'Yara', 24, 'F', '0599555666', 'yara_cashier@gmail.com', 'Cashier', 45678, 5000,3),  
-    (12539, 'Omar', 35, 'M', '0599444555', 'omar_chef@gmail.com', 'Chef', 56789, 10000,3);
+    (12534, 'Lama', 26, 'F', '0599777888', 'lama@gmail.com', 'Manager', 23456, 12000,1),  
+    (12536, 'Fay', 20, 'F', '0599899399', 'fay_123@gmail.com', 'Chef', 12345, 10000,2),  
+    (12535, 'Ahmed', 28, 'M', '0598888777', 'ahmed_123@gmail.com', 'Assistant Manager', 67890, 11000,2),  
+    (12537, 'Nouf', 30, 'F', '0599666777', 'nouf_barista@gmail.com', 'Barista', 34567, 9000,1),  
+    (12538, 'Yara', 24, 'F', '0599555666', 'yara_cashier@gmail.com', 'Cashier', 45678, 8500,3),  
+    (12539, 'Omar', 35, 'M', '0599444555', 'omar_chef@gmail.com', 'Chef', 56789, 12000,3);
     
 UPDATE BRANCH
-SET Manager_ID = 12534  
+SET Manager_ID = 12536  
 WHERE Branch_Code = 2;
 
 UPDATE BRANCH
-SET Manager_ID = 12536  
+SET Manager_ID = 12534  
 WHERE Branch_Code = 3;
 
 
 UPDATE BRANCH
-SET Manager_ID = 12535  
+SET Manager_ID = 12538  
 WHERE Branch_Code = 1;
 
 INSERT INTO MENU  (Menu_ID , Menu_Name)
 value
    (1, 'Summer Menu'),
-      (2, 'Winter Menu');  
+   (2, 'Winter Menu');  
 		
 
 INSERT INTO DISH  (Dish_code ,Category, Dish_Name, Dish_description, Price, Calories,Menu_ID)
@@ -176,3 +210,4 @@ values
 
 SELECT *   
 FROM DISH
+

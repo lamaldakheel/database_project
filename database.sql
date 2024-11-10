@@ -1,3 +1,4 @@
+
 DROP DATABASE IF EXISTS JoeAndTheJoes;
 CREATE DATABASE JoeAndTheJoes;
 USE JoeAndTheJoes;
@@ -54,8 +55,8 @@ BEGIN
     SET MESSAGE_TEXT = 'Cannot delete employee. The branch must have at least 4 employees.';
   END IF;
 END; //
-DELIMITER ;
 
+DELIMITER ;
 
 CREATE TABLE MENU(
   Menu_ID INT PRIMARY KEY,
@@ -77,7 +78,7 @@ CREATE TABLE DISH(
 
 CREATE TABLE ORDERS(
   Order_Number INT PRIMARY KEY,
-  Place VARCHAR(30)
+  Place VARCHAR(30) 
 );
 
 
@@ -88,7 +89,7 @@ CREATE TABLE DISH_TO_PICK_ORDER(
   FOREIGN KEY (Dish_code) REFERENCES DISH(Dish_code),
   FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
 );
-
+  
 
 CREATE TABLE CUSTOMER(
   Phone_Number INT PRIMARY KEY,
@@ -102,8 +103,7 @@ CREATE TABLE BILL(
   Payment_method VARCHAR(30),
   State VARCHAR(10),
   Bill_Date VARCHAR(10),
-  Bill_Hour INT,
-  Bill_Minute INT,
+  Bill_Time time,
   Offer INT,
   Order_Number INT,
   FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
@@ -127,22 +127,23 @@ values
 INSERT INTO EMPLOYEE  (Employee_ID, Employee_Name, Age, Gender, Phone_Number, Email, Employee_position, National_Address, salary, Branch_code)
 VALUES
     (12534, 'Lama', 26, 'F', '0599777888', 'lama@gmail.com', 'Manager', 23456, 15000,1),  
-    (12536, 'Fay', 20, 'F', '0599899399', 'fay_123@gmail.com', 'Chef', 12345, 10000,2),  
-    (12535, 'Ahmed', 28, 'M', '0598888777', 'ahmed_123@gmail.com', 'Assistant Manager', 9890, 11000,2),  
+    (12536, 'Fay', 20, 'F', '0599899399', 'fay_123@gmail.com', 'Manager', 12345, 15000,2),  
+    (12535, 'Ahmed', 28, 'M', '0598888777', 'ahmed_123@gmail.com', 'Manager', 9890, 11000,2),  
     (12537, 'Nouf', 30, 'F', '0599666777', 'nouf_barista@gmail.com', 'Barista', 34567, 6000,1),  
     (12538, 'Yara', 24, 'F', '0599555666', 'yara_cashier@gmail.com', 'Cashier', 45678, 5000,3),  
     (12539, 'Omar', 35, 'M', '0599444555', 'omar_chef@gmail.com', 'Chef', 56789, 10000,3);
+    
 UPDATE BRANCH
-SET Manager_ID = 12536  
+SET Manager_ID = 12534  
 WHERE Branch_Code = 2;
 
 UPDATE BRANCH
-SET Manager_ID = 12534  
+SET Manager_ID = 12536  
 WHERE Branch_Code = 3;
 
 
 UPDATE BRANCH
-SET Manager_ID = 12538  
+SET Manager_ID = 12535  
 WHERE Branch_Code = 1;
 
 INSERT INTO MENU  (Menu_ID , Menu_Name)
@@ -175,4 +176,3 @@ values
 
 SELECT *   
 FROM DISH
-

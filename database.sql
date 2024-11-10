@@ -1,3 +1,111 @@
+DROP DATABASE IF EXISTS JoeAndTheJoes;
+CREATE DATABASE JoeAndTheJoes;
+USE JoeAndTheJoes;
+
+DROP TABLE IF EXISTS BRANCH;
+DROP TABLE IF EXISTS EMPLOYEE;
+DROP TABLE IF EXISTS MENU;
+DROP TABLE IF EXISTS ORDERS;
+DROP TABLE IF EXISTS BRANCH_TIME;
+DROP TABLE IF EXISTS CUSTOMER;
+DROP TABLE IF EXISTS BILL;
+DROP TABLE IF EXISTS CUSTOMER_REQUEST_ORDER;
+DROP TABLE IF EXISTS DISH_TO_PICK_ORDER;
+
+
+
+CREATE TABLE BRANCH(
+  Branch_Code INT PRIMARY KEY,
+  City VARCHAR(30),
+  Neighborhood VARCHAR(30),
+  Street VARCHAR(30),
+  Capacity INT
+  
+);
+
+
+ CREATE TABLE EMPLOYEE(
+  Employee_ID INT PRIMARY KEY,
+  Employee_Name VARCHAR(30) NOT NULL,
+  Age INT,
+  Gender VARCHAR(1),
+  Phone_Number INT(10),
+  Email VARCHAR(30),
+  Employee_position VARCHAR(30),
+  National_Address INT,
+  Salary FLOAT,
+  Branch_Code INT,
+  FOREIGN KEY (Branch_Code) REFERENCES BRANCH(Branch_Code)
+);
+
+
+ALTER TABLE BRANCH
+ADD Manager_ID INT;
+
+ALTER TABLE BRANCH
+ADD CONSTRAINT fk_branch_manager FOREIGN KEY (Manager_ID) REFERENCES EMPLOYEE(Employee_ID);
+
+CREATE TABLE BRANCH_TIME(
+  Branch_Code INT PRIMARY KEY,
+  Open_time VARCHAR(5),
+  Close_time VARCHAR(5),
+  FOREIGN KEY (Branch_Code) REFERENCES BRANCH(Branch_Code)
+);
+
+
+CREATE TABLE MENU(
+  Menu_ID INT PRIMARY KEY,
+  Menu_Name VARCHAR(30)
+);
+
+
+CREATE TABLE DISH(
+  Dish_code INT PRIMARY KEY,
+  Category VARCHAR(30),
+  Dish_Name VARCHAR(30),
+  Dish_description VARCHAR(150),
+  Price FLOAT,
+  Calories FLOAT,
+  Menu_ID INT,
+  FOREIGN KEY (Menu_ID) REFERENCES MENU(Menu_ID)
+);
+
+
+CREATE TABLE ORDERS(
+  Order_Number INT PRIMARY KEY,
+  Place VARCHAR(30)
+);
+
+
+CREATE TABLE DISH_TO_PICK_ORDER(
+  Dish_code INT,
+  Order_Number INT,
+  PRIMARY KEY (Dish_code, Order_Number),
+  FOREIGN KEY (Dish_code) REFERENCES DISH(Dish_code),
+  FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
+);
+
+
+CREATE TABLE CUSTOMER(
+  Phone_Number INT PRIMARY KEY,
+  Customer_Name VARCHAR(30)
+);
+
+
+CREATE TABLE BILL(
+  Bill_Number INT PRIMARY KEY,
+  Total_price FLOAT,
+  Payment_method VARCHAR(30),
+  State VARCHAR(10),
+  Bill_Date VARCHAR(10),
+  Bill_Hour INT,
+  Bill_Minute INT,
+  Offer INT,
+  Order_Number INT,
+  FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
+);
+
+
 CREATE TABLE CUSTOMER_REQUEST_ORDER(
   Phone_Number INT,
   Order_Number INT,
@@ -31,30 +139,37 @@ WHERE Branch_Code = 3;
 
 
 UPDATE BRANCH
-SET Manager_ID = 12534  
-WHERE Branch_Code = 3;
+SET Manager_ID = 12538  
+WHERE Branch_Code = 1;
 
 INSERT INTO MENU  (Menu_ID , Menu_Name)
 value
-   (1, 'Main Menu');  
+   (1, 'Summer Menu'),
+      (2, 'Winter Menu');  
+		
 
-INSERT INTO DISH  (Dish_code ,Category, Dish_Name, Dish_description, Price, Calories)
+INSERT INTO DISH  (Dish_code ,Category, Dish_Name, Dish_description, Price, Calories,Menu_ID)
 values
-   (1, 'Sandwich', 'Spicy Tuna', 'Tuna, spices, and veggies', 29, 300),
-   (2, 'Sandwich', 'Avocado', 'Avocado, modzarella, tomatos, pesto ', 29, 485),
-   (3, 'Sandwich', 'joes club', 'chicken, avocado,tomatos, pesto', 29, 430),
-   (4, 'Salad bowl', 'Green tuna ', 'Lemon, Spinach, Cranberry, Pumpkin Seeds, Pickled Red Onion, Edamame, Tuna, Cucumber, Kale, Pesto ', 36, 560), 
-   (5, 'protein shakes', 'Beets & Berries', 'Strawberries, Beetroot Powder, Banana, Date Puree, Ice, Whey Protein', 33, 370),
-   (6, 'shakes', 'Power Shake', 'Vanilla Milk, Strawberries, Banana, Ice', 24,290 ), 
-   (7, 'Shakes', 'Acia', 'Coconut Drink, Avocado, Banana, Peanut Butter, Ice, Acai', '29', 360),
-   (8, 'Juices', 'GO Away DOC', 'Carrot, Ginger,Apple,Olive Oil, Ice', '29', 177),
-   (9, 'Juices', 'Green Tonic', 'Kale, Celert, Cucumber, Olive', '29', 70),
-   (10, 'Hot Coffe', 'Pink late', 'Regular Mile, Espresso, ', '18', 243),
-   (11, 'Cold Coffe', 'Iced Vanilla Matcha', 'Vanilla Syrup, Matcha Regular Milk, Ice', '24', 204),
-   (12, 'Snacks & Treats', 'Blueberry Muffin', 'Blueberry Muffin', '16', 306),
-   (13, 'Shots', 'Ginger Shot', 'Apple, Ice, Ginger', '10', 25);
+   (1, 'Sandwich', 'Spicy Tuna', 'Tuna, Tomato, Jalapenos, Tabasco, Pesto', 29, 525,1),
+   (2, 'Sandwich', 'Avocado', 'Avocado, Modzarella, Tomatos, Pesto ', 29, 485,1),
+   (3, 'Sandwich', 'Joes Club', 'Chicken, Avocado, Tomatos, Pesto', 29, 448,1),
+   (4, 'Sandwich', 'Tunacado', 'Tuna, Avocado, Tomato, Pesto', 29, 571,2),
+   (5, 'Sandwich', 'Turkey', 'Turky, Mozzarella, Tomato, Pesto', 29,497,2),
+   (6,'Sandwich', 'Spaicy Club', 'chicken, avocado,tomatos, pesto', 29, 451,2),
+   (7, 'Sandwich', 'Halloumi', 'chicken, avocado,tomatos, pesto', 29, 642,2),
+   (8, 'Sandwich', 'Bresaola', 'chicken, avocado,tomatos, pesto', 29, 411,1),
+   (9, 'Salad bowl', 'Green tuna ', 'Lemon, Spinach, Cranberry, Pumpkin Seeds, Pickled Red Onion, Edamame, Tuna, Cucumber, Kale, Pesto ', 36, 560,1), 
+   (10, 'protein shakes', 'Beets & Berries', 'Strawberries, Beetroot Powder, Banana, Date Puree, Ice, Whey Protein', 33, 370,1),
+   (11, 'shakes', 'Power Shake', 'Vanilla Milk, Strawberries, Banana, Ice', 24,290,1 ), 
+   (12, 'Shakes', 'Acia', 'Coconut Drink, Avocado, Banana, Peanut Butter, Ice, Acai', '29', 360,1),
+   (13, 'Juices', 'GO Away DOC', 'Carrot, Ginger,Apple,Olive Oil, Ice', '29', 177,1),
+   (14, 'Juices', 'Green Tonic', 'Kale, Celert, Cucumber, Olive', '29', 70,1),
+   (15, 'Hot Coffe', 'Pink late', 'Regular Mile, Espresso, ', '18', 243,1),
+   (16, 'Cold Coffe', 'Iced Vanilla Matcha', 'Vanilla Syrup, Matcha Regular Milk, Ice', '24', 204,1),
+   (17, 'Snacks & Treats', 'Blueberry Muffin', 'Blueberry Muffin', '16', 306,1),
+   (18, 'Shots', 'Ginger Shot', 'Apple, Ice, Ginger', '10', 25,1);
 
 
 SELECT *   
-FROM BRANCH
+FROM DISH
 

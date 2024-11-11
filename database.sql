@@ -12,6 +12,10 @@ DROP TABLE IF EXISTS BILL;
 DROP TABLE IF EXISTS CUSTOMER_REQUEST_ORDER;
 DROP TABLE IF EXISTS DISH_TO_PICK_ORDER;
 
+CREATE TABLE MENU(
+  Menu_ID INT PRIMARY KEY,
+  Menu_Name VARCHAR(30)
+);
 
 
 CREATE TABLE BRANCH(
@@ -19,7 +23,9 @@ CREATE TABLE BRANCH(
   City VARCHAR(30),
   Neighborhood VARCHAR(30),
   Street VARCHAR(30),
-  Capacity INT CHECK (Capacity BETWEEN 30 AND 200)
+  Capacity INT CHECK (Capacity BETWEEN 30 AND 200),
+  Menu_ID int,
+  FOREIGN KEY (Menu_ID) REFERENCES MENU(Menu_ID)
 );
 
 
@@ -57,10 +63,6 @@ END; //
 
 DELIMITER ;
 
-CREATE TABLE MENU(
-  Menu_ID INT PRIMARY KEY,
-  Menu_Name VARCHAR(30)
-);
 
 CREATE TABLE DISH(
   Dish_code INT PRIMARY KEY,
@@ -83,6 +85,7 @@ CREATE TABLE ORDERS(
 CREATE TABLE DISH_TO_PICK_ORDER(
   Dish_code INT,
   Order_Number INT,
+  Quantiti int,
   PRIMARY KEY (Dish_code, Order_Number),
   FOREIGN KEY (Dish_code) REFERENCES DISH(Dish_code),
   FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
@@ -152,33 +155,39 @@ CREATE TABLE CUSTOMER_REQUEST_ORDER(
   FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
 );
 
-INSERT INTO BRANCH (Branch_Code , City , Neighborhood , Street , Capacity, Manager_ID)
+INSERT INTO BRANCH (Branch_Code , City , Neighborhood , Street , Capacity, Manager_ID, Menu_ID)
 values
-    (1, 'Riyadh', 'Al-Sulaimaniya', 'King Saud Road', 100,null),
-    (2, 'Riyadh', 'Alaqiq', 'Kafd ring roud', 150,null),
-    (3, 'Riyadh', 'alsafarat', 'Alkhawaba', 100, null);
+    (1, 'Riyadh', 'Al-Sulaimaniya', 'King Saud Road', 100,null,1),
+    (2, 'Riyadh', 'Alaqiq', 'Kafd ring roud', 150,null,1),
+    (3, 'Riyadh', 'alsafarat', 'Alkhawaba', 100, null,1);
     
 INSERT INTO EMPLOYEE  (Employee_ID, Employee_Name, Age, Gender, Phone_Number, Email, Employee_position, National_Address, salary, Branch_code)
 VALUES
-    (12534, 'Lama', 26, 'F', '966599777888', 'lama@gmail.com', 'Manager', 23456, 12000,1),  
-    (12536, 'Fay', 20, 'F', '966599899399', 'fay_123@gmail.com', 'Chef', 12345, 10000,2),  
-    (12535, 'Ahmed', 28, 'M', '966598888777', 'ahmed_123@gmail.com', 'Assistant Manager', 67890, 11000,2),  
-    (12537, 'Nouf', 30, 'F', '966599666777', 'nouf_barista@gmail.com', 'Barista', 34567, 9000,1),  
-    (12538, 'Yara', 24, 'F', '966599555666', 'yara_cashier@gmail.com', 'Cashier', 45678, 8500,3),  
-    (12539, 'Omar', 35, 'M', '966599444555', 'omar_chef@gmail.com', 'Chef', 56789, 12000,3);
+    (12534, 'Lama', 26, 'F', '966599777888', 'lama123@gmail.com', 'Manager', 23456, 12000,1),  
+    (12536, 'Hanin', 20, 'F', '966599899399', 'hanin123@gmail.com', 'Chef', 12345, 10000,1),  
+	(12537, 'Nouf', 30, 'F', '966599666777', 'nouf_barista@gmail.com', 'Barista', 34567, 9000,1),
+	(12540, 'khaled', 25, 'M', '966599555666', 'khaled123@gmail.com', 'Cashier', 45678, 8500,1),  
+    (12535, 'Fay', 26, 'F', '966599777253', 'fay_123@gmail.com', 'Manager', 45363, 12000,2),  
+    (12539, 'Yasser', 20, 'M', '966599899334', 'yasser123@gmail.com', 'Chef', 97865, 10000,2),  
+	(12538, 'Yara', 30, 'F', '966599666745', 'yara353@gmail.com', 'Barista', 12323, 9000,2),
+	(12541, 'Nawaf', 25, 'M', '966599555667', 'Nawaf45@gmail.com', 'Cashier', 98675, 8500,2),
+    (12522, 'Ahmed', 28, 'M', '966598888345', 'ahmed_123@gmail.com', 'Manager', 34521, 12000,3),  
+	(12523, 'Omar', 35, 'M', '966599444963', 'omar_chef@gmail.com', 'Chef', 76859, 10000,3),
+	(12524, 'Demma', 30, 'F', '966599666711', 'domo@gmail.com', 'Barista', 49374, 9000,3),
+    (12525, 'noura', 24, 'F', '966599555634', 'noura123@gmail.com', 'Cashier', 98743, 8500,3); 
     
 
 UPDATE BRANCH
-SET Manager_ID = 12536  
+SET Manager_ID = 12535  
 WHERE Branch_Code = 2;
 
 UPDATE BRANCH
-SET Manager_ID = 12534  
+SET Manager_ID = 12522  
 WHERE Branch_Code = 3;
 
 
 UPDATE BRANCH
-SET Manager_ID = 12538  
+SET Manager_ID = 12534  
 WHERE Branch_Code = 1;
 
 INSERT INTO MENU  (Menu_ID , Menu_Name)

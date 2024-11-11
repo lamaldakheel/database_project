@@ -155,6 +155,11 @@ CREATE TABLE CUSTOMER_REQUEST_ORDER(
   FOREIGN KEY (Order_Number) REFERENCES ORDERS(Order_Number)
 );
 
+INSERT INTO MENU  (Menu_ID , Menu_Name)
+values
+   (1, 'Summer Menu'),
+   (2, 'Winter Menu');  
+
 INSERT INTO BRANCH (Branch_Code , City , Neighborhood , Street , Capacity, Manager_ID, Menu_ID)
 values
     (1, 'Riyadh', 'Al-Sulaimaniya', 'King Saud Road', 100,null,1),
@@ -190,10 +195,6 @@ UPDATE BRANCH
 SET Manager_ID = 12534  
 WHERE Branch_Code = 1;
 
-INSERT INTO MENU  (Menu_ID , Menu_Name)
-values
-   (1, 'Summer Menu'),
-   (2, 'Winter Menu');  
 		
 
 INSERT INTO DISH  (Dish_code ,Category, Dish_Name, Dish_description, Price, Calories,Menu_ID)

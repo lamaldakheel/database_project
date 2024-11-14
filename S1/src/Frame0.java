@@ -3,10 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 
-/**
- *
- * @author Fay12
- */
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.DriverManager;
+import javax.swing.JOptionPane;
+
+
 public class Frame0 extends javax.swing.JFrame {
 
     /**
@@ -83,6 +86,7 @@ public class Frame0 extends javax.swing.JFrame {
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
@@ -90,7 +94,26 @@ public class Frame0 extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:                                        
+    try {
+        // Get the entered ID from the JTextField
+        int enteredID = Integer.parseInt(jTextField3.getText().trim());
+
+        // Check if the ID exists in the database
+        if (checkIDExist(enteredID)) { // Call the method directly
+            JOptionPane.showMessageDialog(this, "ID found! Proceeding to the next step.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Open the next frame
+            Frame1 frame = new Frame1();
+            frame.setVisible(true);
+            this.dispose(); // Close the current frame
+        } else {
+            JOptionPane.showMessageDialog(this, "ID not found! Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Please enter a valid numeric ID!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+    }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -136,4 +159,34 @@ public class Frame0 extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
+
+
+
+
+
+
+
+    public static boolean checkIDExist(int id) {
+        try {
+            // Use the existing NetBeans database connection
+            Connection connection = DriverManager.getConnection("jdbc:default:connection");
+
+            // SQL query to check if the ID exists
+            String query = "SELECT 1 FROM employees WHERE id = ? LIMIT 1";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            // Set the ID parameter
+            statement.setInt(1, id);
+
+            // Execute the query
+            ResultSet resultSet = statement.executeQuery();
+
+            // Return true if a result is found
+            return resultSet.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false; // Return false if no result is found or an error occurs
+    }
 }

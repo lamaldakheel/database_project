@@ -200,7 +200,7 @@ public class CashierFrame extends javax.swing.JFrame {
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 50, 310, 400));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI_JoeAndTheJoes/Picture2.jpg"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Picture1.jpg"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 540));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

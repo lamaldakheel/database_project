@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package Gui_joe;
+//
 
 /**
  *
@@ -34,7 +34,7 @@ public class Frame2 extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        ModifyEmpPanel = setVisible(false);
+        ModifyEmpPanel = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jCheckBox3 = new javax.swing.JCheckBox();
         jCheckBox4 = new javax.swing.JCheckBox();
@@ -162,7 +162,7 @@ public class Frame2 extends javax.swing.JFrame {
         );
 
         getContentPane().add(ShowEmpPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 40, 250, -1));
-        ShowEmpPanel.setvisible(false);
+        ShowEmpPanel.setVisible(false);
 
         ModifyEmpPanel.setBackground(new java.awt.Color(245, 204, 227));
 
@@ -459,7 +459,7 @@ public class Frame2 extends javax.swing.JFrame {
         );
 
         getContentPane().add(ModifyEmpPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, -1, 390));
-        ModifyEmpPanel.setvisible(false);
+        ModifyEmpPanel.setVisible(false);
 
         RemoveEmpPanel.setBackground(new java.awt.Color(245, 204, 227));
 
@@ -528,7 +528,7 @@ public class Frame2 extends javax.swing.JFrame {
         );
 
         getContentPane().add(RemoveEmpPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 130, 410, 240));
-        RemoveEmpPanel.setvisible(false);
+        RemoveEmpPanel.setVisible(false);
 
         AddEmpPanel.setBackground(new java.awt.Color(245, 204, 227));
 
@@ -760,7 +760,7 @@ public class Frame2 extends javax.swing.JFrame {
         );
 
         getContentPane().add(AddEmpPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, 410, 440));
-        AddEmpPanel.setvisible(false);
+        AddEmpPanel.setVisible(false);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Picture1.jpg"))); // NOI18N
         jLabel2.setText("jLabel2");
@@ -771,6 +771,35 @@ public class Frame2 extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
+     
+    // Get the selected option from the ComboBox
+    String selectedOption = (String) jComboBox1.getSelectedItem();
+
+    // Hide all panels first
+    AddEmpPanel.setVisible(false);
+    RemoveEmpPanel.setVisible(false);
+    ModifyEmpPanel.setVisible(false);
+    ShowEmpPanel.setVisible(false);
+
+    // Show the panel based on the selected option
+    switch (selectedOption) {
+        case "Add Employee":
+            AddEmpPanel.setVisible(true);
+            break;
+        case "Remove Employee":
+            RemoveEmpPanel.setVisible(true);
+            break;
+        case "Modify Employee":
+            ModifyEmpPanel.setVisible(true);
+            break;
+        case "Show Employee":
+            ShowEmpPanel.setVisible(true);
+            break;
+    }
+
+    // Refresh the layout to ensure changes are applied
+    
+
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -851,6 +880,7 @@ public class Frame2 extends javax.swing.JFrame {
 
     private void jCheckBox10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox10ActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_jCheckBox10ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
